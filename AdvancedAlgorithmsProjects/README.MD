@@ -54,3 +54,24 @@ Projekt wyliczający wyznacznik macierzy od pierwszego do dziesiątego stopnia.
    "determinant" - decimal
 }
 ```
+
+## Metoda Bisekcji
+
+Metoda wyszukiwania x`ów, dla których funkcja piątego stopnia przyjmuje wartość równą 0
+
+### Request body
+```
+{
+    "numbers" - decimal[] // Liczby ustawione od x^0 do x^5,
+    "delta" - decimal // Mniejsza niż zakres
+    "min" - decimal
+    "max" - decimal
+}
+```
+
+### Respone body
+```
+{
+    "number" decimal[]
+}
+```
