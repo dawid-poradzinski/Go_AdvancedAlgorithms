@@ -3,6 +3,7 @@ package main
 import (
 	bisection "AdvancedAlgorithmsProjects/src/bisection/handler"
 	determinant "AdvancedAlgorithmsProjects/src/determinant/handler"
+	monte_carlo_handler "AdvancedAlgorithmsProjects/src/monte_carlo/handler"
 	quadruplet "AdvancedAlgorithmsProjects/src/quadruple/handler"
 	"net/http"
 
@@ -29,6 +30,10 @@ func main() {
 
 	r.POST("/bisection", func(c *gin.Context) {
 		bisection.Bisection(c)
+	})
+
+	r.POST("/monteCarlo", func(c *gin.Context) {
+		monte_carlo_handler.MonteCarlo(c)
 	})
 
 	r.Run(":8080")
