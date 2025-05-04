@@ -1,6 +1,8 @@
 package bisection_logic
 
 import (
+	bisection_model "AdvancedAlgorithmsProjects/src/bisection/model"
+	"math"
 	"reflect"
 	"testing"
 )
@@ -45,6 +47,33 @@ func TestCalculateValueInPoint(t *testing.T) {
 		result := CalculateValueInPoint(tc.numbers, tc.x)
 		if !reflect.DeepEqual(result, tc.expected) {
 			t.Errorf("CalculateValueInPoint(id%v,%f) = %v; want error -> %v", id, tc.x, result, tc.expected)
+		}
+	}
+
+}
+
+func TestBisection(t *testing.T) {
+
+	cases := []struct {
+		request  bisection_model.BisectionRequest
+		err      bool
+		expected float64
+	}{
+		{request: bisection_model.BisectionRequest{Numbers: []float64{1, 2, 3, 4, 5, 6}, Delta: 0.001, Min: -1, Max: 1}, err: false, expected: -0.670},
+		{request: bisection_model.BisectionRequest{Numbers: []float64{1, 2, 3, 4, 5, 6}, Delta: 0.001, Min: 2, Max: 3}, err: true, expected: -1},
+		{request: bisection_model.BisectionRequest{Numbers: []float64{1, 2, 3, 4, 5, 6}, Delta: 0.001, Min: -10, Max: 10}, err: false, expected: -0.670},
+		{request: bisection_model.BisectionRequest{Numbers: []float64{-5, 2, 5, -2, 3, -2}, Delta: 0.0001, Min: -1, Max: 0}, err: false, expected: -0.8236},
+		{request: bisection_model.BisectionRequest{Numbers: []float64{-5, 2, 5, -2, 3, -2}, Delta: 0.0001, Min: 0.5, Max: 1.5}, err: false, expected: 0.8784},
+		{request: bisection_model.BisectionRequest{Numbers: []float64{-5, 2, 5, -2, 3, -2}, Delta: 0.0001, Min: 1, Max: 2}, err: false, expected: 1.6857},
+		{request: bisection_model.BisectionRequest{Numbers: []float64{-5, 2, 5, -2, 3, -2}, Delta: 0.0001, Min: -0.5, Max: 2}, err: true, expected: -1},
+	}
+
+	for id, tc := range cases {
+		result, err := Bisection(tc.request)
+		if (err != nil) != tc.err {
+			t.Errorf("Bisection(id%v) = %v -> want error -> %v", id, err, tc.err)
+		} else if math.Abs(result-tc.expected) > tc.request.Delta {
+			t.Errorf("Bisection(id%v) = %f;%f. Math.abs -> %f, epsilon, %f", id, result, tc.expected, math.Abs(result-tc.expected), tc.request.Delta)
 		}
 	}
 

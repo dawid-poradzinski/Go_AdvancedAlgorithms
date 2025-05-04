@@ -38,48 +38,43 @@ func CalculateValueInPoint(numbers []float64, x float64) float64 {
 
 }
 
-func Bisection(model bisection_model.BisectionRequest) ([]float64, error) {
+func Bisection(model bisection_model.BisectionRequest) (float64, error) {
 
-	err := ValidateRange(model.Delta, model.Min, model.Max)
-	if err == nil {
-		return nil, err
+	if err := ValidateRange(model.Delta, model.Min, model.Max); err != nil {
+		return -1, err
 	}
 
-	result := []float64{}
+	minY := CalculateValueInPoint(model.Numbers, model.Min)
+	maxY := CalculateValueInPoint(model.Numbers, model.Max)
 
-	return result, nil
+	if minY*maxY > 0 {
+		return -1, errors.New("Range starts and end with the same + or - sign")
+	}
+
+	return CheckRange(model.Min, model.Max, model.Numbers, minY, maxY, model.Delta), nil
 }
 
-func CheckRange(numbers []float64, min float64, max float64, delta float64, dive int, lastY float64) []float64 {
+func CheckRange(minX float64, maxX float64, numbers []float64, minY float64, maxY float64, epsilon float64) float64 {
 
-	result := []float64{}
+	middleX := 0.0
 
-	if dive < 3 {
+	for math.Abs(minX-maxX) > epsilon {
 
-		tenPercent := (math.Abs(min-max) * 0.1)
+		middleX = (minX + maxX) / 2
 
-		if tenPercent < delta {
-			return result
+		middleY := CalculateValueInPoint(numbers, middleX)
+
+		if middleY == 0 {
+			return middleX
+		} else if (minY > 0) == (middleY > 0) {
+			minX = middleX
+			minY = middleY
+		} else {
+			maxX = middleX
+			maxY = middleY
 		}
-
-		last := min
-
-		for x := last + tenPercent; x <= max; x += tenPercent {
-
-			y := CalculateValueInPoint(numbers, x)
-
-			if y == 0 {
-				result = append(result, x)
-			} else if (lastY > 0 && y > 0) || (lastY < 0 && y < 0) {
-				result = append(result, CheckRange(numbers, last, x, delta, dive+1, y)...)
-			} else {
-				result = append(result, CheckRange(numbers, last, x, delta, 0, y)...)
-			}
-
-			lastY = y
-		}
-
 	}
 
-	return result
+	return middleX
+
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	bisection "AdvancedAlgorithmsProjects/src/bisection/handler"
 	determinant "AdvancedAlgorithmsProjects/src/determinant/handler"
 	quadruplet "AdvancedAlgorithmsProjects/src/quadruple/handler"
 	"net/http"
@@ -24,6 +25,10 @@ func main() {
 
 	r.POST("/determinant", func(c *gin.Context) {
 		determinant.Determinant(c)
+	})
+
+	r.POST("/bisection", func(c *gin.Context) {
+		bisection.Bisection(c)
 	})
 
 	r.Run(":8080")

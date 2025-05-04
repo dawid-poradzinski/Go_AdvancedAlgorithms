@@ -8,5 +8,5 @@ type BisectionRequest struct {
 }
 
 type BisectionResponse struct {
-	Number []float64
+	X float64
 }
